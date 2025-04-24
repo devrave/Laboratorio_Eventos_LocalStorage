@@ -25,37 +25,101 @@ Si se vuelve a hacer clic, la tarea debe volver a su estado normal.
 //     alert("hola")
 // }
 
-// Obtener referencias del DOM
-const nuevoelemento = document.getElementById("listaTareas");
-const agregarBoton = document.getElementById("agregarBtn");
-const eliminarBoton = document.getElementById("eliminarBtn");
+ // Obtener referencias de los elementos del DOM
+ const listaTareas = document.getElementById("listaTareas");
+ const agregarBtn = document.getElementById("agregarBtn");
+ const eliminarBtn = document.getElementById("eliminarBtn");
+ const borrarTodoBtn = document.getElementById("borrarTodoBtn");
+ const tareaInput = document.getElementById("tareaInput");
 
-// Agregar tarea
-agregarBoton.addEventListener("click", () => {
-  const tareaInput = document.getElementById("tareaInput");
-  const tarea = tareaInput.value.trim();
+ // Función para obtener las tareas desde localStorage
+ function obtenerTareas() {
+   const tareasGuardadas = localStorage.getItem("tareas");
+   if (tareasGuardadas) {
+     return JSON.parse(tareasGuardadas);
+   } else {
+     return [];
+   }
+ }
 
-  if (tarea) {
-    const agreItem = document.createElement("li");
-    agreItem.textContent = tarea;
+ // Función para guardar las tareas en localStorage
+ function guardarTareas(tareas) {
+   localStorage.setItem("tareas", JSON.stringify(tareas));
+ }
 
-    // Marcar como completada 
-    agreItem.addEventListener("click", () => {
-      agreItem.classList.toggle("completada"); // me adiciona una clase y por medio de click tacha la lista con id agreItem
-    });
+ // Función para mostrar las tareas en la lista
+ function mostrarTareas() {
+   // Limpiar la lista antes de volver a mostrar
+   listaTareas.innerHTML = "";
 
-    nuevoelemento.appendChild(agreItem);
-    tareaInput.value = "";
-  } else {
-    alert("Por favor, ingrese una tarea.");
-  }
-});
+   // Obtener las tareas almacenadas
+   const tareas = obtenerTareas();
 
-// Eliminar ultima lista
-eliminarBoton.addEventListener("click", () => {
-  if (nuevoelemento.lastChild) {
-    nuevoelemento.removeChild(nuevoelemento.lastChild);
-  } else {
-    alert("No hay tareas para eliminar.");
-  }
-});
+   // Recorrer todas las tareas y mostrarlas
+   for (let i = 0; i < tareas.length; i++) {
+     const tarea = tareas[i];
+     const li = document.createElement("li");
+     li.textContent = tarea.texto;
+
+     // Si la tarea está completada, agregar la clase
+     if (tarea.completada === true) {
+       li.classList.add("completada");
+     }
+
+     // Evento para marcar/desmarcar como completada
+     li.addEventListener("click", function() {
+       if (tareas[i].completada === true) {
+         tareas[i].completada = false;
+       } else {
+         tareas[i].completada = true;
+       }
+       guardarTareas(tareas);
+       mostrarTareas();
+     });
+
+     listaTareas.appendChild(li);
+   }
+ }
+
+ // Evento para agregar una nueva tarea
+ agregarBtn.addEventListener("click", function() {
+   const texto = tareaInput.value.trim();
+
+   if (texto !== "") {
+     const tareas = obtenerTareas();
+     const nuevaTarea = {
+       texto: texto,
+       completada: false
+     };
+     tareas.push(nuevaTarea);
+     guardarTareas(tareas);
+     mostrarTareas();
+     tareaInput.value = "";
+   } else {
+     alert("Por favor, ingrese una tarea.");
+   }
+ });
+
+ // Evento para eliminar la última tarea
+ eliminarBtn.addEventListener("click", function() {
+   const tareas = obtenerTareas();
+   if (tareas.length > 0) {
+     tareas.pop();
+     guardarTareas(tareas);
+     mostrarTareas();
+   } else {
+     alert("No hay tareas para eliminar.");
+   }
+ });
+
+ // Evento para borrar todas las tareas
+ borrarTodoBtn.addEventListener("click", function() {
+   const confirmacion = confirm("¿Seguro que quieres borrar todas las tareas?");
+   if (confirmacion === true) {
+     localStorage.removeItem("tareas");
+     mostrarTareas();
+   }
+ });
+
+ // Mostrar tareas al cargar la página
+ mostrarTareas();
