@@ -1,0 +1,46 @@
+/* Estilo general */
+body {
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(to right, #f0f4ff, #e4f7ff);
+    min-height: 100vh;
+    transition: background 0.5s ease;
+  }
+  
+  h1 {
+    font-weight: 700;
+    color: #003366;
+    text-shadow: 1px 1px 2px #ccc;
+  }
+  
+  /* Input y botón */
+ /* Estilo general */
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  /* Input y botones */
+  input, button {
+    margin: 10px 5px;
+    padding: 10px;
+    font-size: 16px;
+  }
+  
+  /* Estilo de la lista */
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin: 5px 0;
+    cursor: pointer;
+  }
+  
+  /* Estilo para tareas completadas */
+  .completada {
+    text-decoration: line-through;
+    color: gray;
+    opacity: 0.7;
+  }
